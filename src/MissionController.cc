@@ -73,6 +73,20 @@ void parsing (const dataPack &data, Receipt *result) {
             result->success = 1;
         }
     }
+    else if (data.operation ==
+             static_cast<unsigned char>(OPERATION::CREATE)) {
+        result->operation = 4; 
+        result->value = 0;
+        int err = db::create("user",
+                             data.account.id,
+                             data.account.password,
+                             data.account.amount);
+        if (err < 0) {
+            result->success = 0;
+        } else {
+            result->success = 1;
+        }
+    }
     //else if (data.operation ==
     //         static_cast<unsigned char>(OPERATION::CONNECT)) {
     //    char path[256];

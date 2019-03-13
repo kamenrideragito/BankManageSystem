@@ -17,12 +17,14 @@ enum class OPERATION:unsigned char {
     DRAW,
     QUERY,
     CLOSE,
+    CREATE,
 };
 struct dataPack{
     char cardid[20];
     unsigned char operation;
     int amount;
     int sessionid;
+    Account account;
 }__attribute__((packed));
 
 struct Receipt {

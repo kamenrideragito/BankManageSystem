@@ -118,4 +118,26 @@ int query(const char *table,
     return 0;
 }
 
+int create(const char *table,
+           const char *id,
+           const char *password,
+           const int amount) {
+    sqlite3 *connector;
+    int err = sqlite3_open(database, &connector);
+    if (err) {
+        sqlite3_close(connector);
+        return -1;
+    }
+    char SQL[1024];
+    sprintf(SQL, "INSERT INTO %s (id, password, amount) \
+                  VALUES(%s, %s, %d)", table, id, password, amount);
+    err = sqlite3_exec(connector, SQL, NULL, NULL, NULL);
+    if (err) {
+        sqlite3_close(connector);
+        return -1;
+    }
+    sqlite3_close(connector);
+    return 0;
+}
+
 } // end of namespace db

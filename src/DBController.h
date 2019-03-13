@@ -27,4 +27,9 @@ int query(const char *table,
           const char *id,
           Account *account);
 
+int create(const char *table,
+           const char *id,
+           const char *password,
+           const int amount);
+
 }
