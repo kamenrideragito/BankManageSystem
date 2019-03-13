@@ -85,7 +85,9 @@ void* doProcess(void *datapack){
     sprintf(path, "%s/%d.fifo", tool::getFifoPath(), 
                                 data->sessionid);
     int err = mkfifo(path, tool::mode);
-    int fd = open(path, O_WRONLY);
+    printf("after make\n");
+    printf("path: %s\n", path);
+    int fd = open(path, O_RDWR);
     printf("before write\n");
     write(fd, receipt, sizeof(mission::Receipt));
     printf("after write\n");
@@ -117,6 +119,7 @@ void start() {
         pthread_attr_setdetachstate(&attr, PTHREAD_CREATE_DETACHED);
         int err = pthread_create(NULL, &attr, doProcess, (void*)data);
         close(fd);
+        sleep(10);
     }
 }
 

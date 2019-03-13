@@ -46,8 +46,8 @@ char* getDBPath() {
             exit(1);
         }
     }
-    char path[256];
-    sprintf(path, "%s/Account.db", dbpath);
-    return path;
+    printf("%s\n", dbpath);
+    sprintf(dbpath, "%s/Account.db", dbpath);
+    return dbpath;
 }
 } // end of namespace tool

@@ -101,6 +101,7 @@ int query(const char *table,
     sqlite3 *connector;
     int err = sqlite3_open(database, &connector);
     if (err) {
+        printf("Can't open db\n");
         sqlite3_close(connector);
         return -1;
     }
