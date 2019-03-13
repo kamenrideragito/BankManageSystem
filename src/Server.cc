@@ -13,9 +13,13 @@
 #include <signal.h>
 #include <stdio.h>
 #include <string.h>
+#include <sys/mman.h>
 
 #include "ProjectTool.h"
 #include "MissionController.h"
+#include "DBController.h"
+#include "Account.h"
+#include "Thread.h"
 
 void daemonize(const char *cmd) {
     int                 i, fd0, fd1, fd2;
@@ -69,12 +73,56 @@ void daemonize(const char *cmd) {
     }   
 }
 
-int init(){
-    char fifopath[256];
+void* doProcess(void *datapack){
+    printf("into new thread\n");
+    mission::dataPack *data = reinterpret_cast<mission::dataPack*>(datapack); 
+    mission::Receipt* receipt = new mission::Receipt;
+    printf("before\n");
+    mission::parsing(*data, receipt);
+    printf("after\n");
+    char path[256];
+    printf("after new\n");
+    sprintf(path, "%s/%d.fifo", tool::getFifoPath(), 
+                                data->sessionid);
+    int err = mkfifo(path, tool::mode);
+    int fd = open(path, O_WRONLY);
+    printf("before write\n");
+    write(fd, receipt, sizeof(mission::Receipt));
+    printf("after write\n");
+    delete data;
+    close(fd);
+    printf("end of doProcess\n");
 }
+
+void start() {
+    char path[256];
+    sprintf(path, "%s/server.fifo", tool::getFifoPath());
+    mkfifo(path, tool::mode);
+    while (true) {
+        int fd = open(path, O_RDONLY);
+        mission::dataPack *data = new mission::dataPack;
+        //while((read(fd, data, sizeof(mission::dataPack))) > 0) {
+        //    printf("%s %d %d %d\n", data->cardid, data->operation,
+        //                             data->amount, data->sessionid);
+        //    pthread_attr_t attr;
+        //    pthread_attr_init(&attr);
+        //    pthread_attr_setdetachstate(&attr, PTHREAD_CREATE_DETACHED);
+        //    int err = pthread_create(NULL, &attr, doProcess, (void*)data);
+        //}
+        read(fd, data, sizeof(mission::dataPack));
+        printf("%s %d %d %d\n", data->cardid, data->operation,
+                                 data->amount, data->sessionid);
+        pthread_attr_t attr;
+        pthread_attr_init(&attr);
+        pthread_attr_setdetachstate(&attr, PTHREAD_CREATE_DETACHED);
+        int err = pthread_create(NULL, &attr, doProcess, (void*)data);
+        close(fd);
+    }
+}
+
 
 int main() {
 //    daemonize("BankSystem");
-    printf("%s\n", tool::getInstancePath());
+    start(); 
     return 0;
 }

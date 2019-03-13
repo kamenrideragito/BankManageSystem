@@ -11,7 +11,7 @@
 namespace db
 {
 
-const char *database = "./test.db";
+const char *database = tool::getDBPath();
 
 int add(const char *table,
         const char *id,
@@ -104,6 +104,7 @@ int query(const char *table,
         sqlite3_close(connector);
         return -1;
     }
+    strcpy(account->id, "no such user");
     char SQL[1024];
     sprintf(SQL, "SELECT * FROM %s \
                   WHERE id = '%s';", table, id);

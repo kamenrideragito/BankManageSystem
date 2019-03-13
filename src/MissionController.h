@@ -25,11 +25,12 @@ struct dataPack{
     int sessionid;
 }__attribute__((packed));
 
-struct receipt {
+struct Receipt {
     unsigned char operation;
     unsigned char success;
     int value;
+    Account account;
 }__attribute__((packed));
 
-void parsing(const dataPack &data, receipt *result);
+void parsing(const dataPack &data, Receipt *result);
 } // end of namespace mission

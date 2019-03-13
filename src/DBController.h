@@ -8,6 +8,7 @@
 #include <string>
 #include "sqlite3.h"
 #include "Account.h"
+#include "ProjectTool.h"
 
 namespace db
 {
