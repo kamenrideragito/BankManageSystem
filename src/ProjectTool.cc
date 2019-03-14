@@ -46,7 +46,6 @@ char* getDBPath() {
             exit(1);
         }
     }
-    printf("%s\n", dbpath);
     sprintf(dbpath, "%s/Account.db", dbpath);
     return dbpath;
 }

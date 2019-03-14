@@ -13,7 +13,7 @@
 namespace mission
 {
 enum class OPERATION:unsigned char {
-    SAVE = 0,
+    SAVE = 'a',
     DRAW,
     QUERY,
     CLOSE,
