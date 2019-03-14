@@ -14,7 +14,7 @@ app.config.update(
         DEBUG=True,
         SECRET_KEY='development key',
         USERNAME='admin',
-        PASSWORD='default'
+        PASSWORD='default',
         AMOUNT=0
     ))
 app.config.from_envvar('FLASKR_SETTINGS', silent=True)
@@ -126,6 +126,8 @@ def login():
 
         re = os.read(fd, 135)
         status = struct.unpack('=2ci20s105si', re)
+        index = status[4].index('\0')
+        status[4] = status[4][:index]
         if status[1] == 0:
             error = 'Login Error'
         elif not(status[4] == request.form['password']):
@@ -135,7 +137,7 @@ def login():
             app.config.update(dict(
                 USERNAME=request.form['username'],
                 PASSWORD=request.form['password'],
-                AMOUNT=status[3][2]))
+                AMOUNT=status[5]))
             flash('You were logged in')
             return redirect(url_for('show_entries'))
     return render_template('login.html', error=error)
